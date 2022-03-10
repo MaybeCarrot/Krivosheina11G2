@@ -43,7 +43,7 @@ def task():
 
 conn.close()
 
-class Test(unitest.TestCase):
+class Test(unittest.TestCase):
     
     def test_goods(self):
         for i in range(1, 4 + 1):
@@ -68,5 +68,57 @@ class Test(unitest.TestCase):
     def tearDown(self):
         self.__temp.conn.close()
         
-if __name__ == '__main__':  # точка входа в программу
+    def Set(self):
+        self.__temp = DataBase(':memory:')
+        self.__temp.get_cursor.executescript(
+            '''
+            CREATE TABLE IF NOT EXISTS "Client"(
+                "id" INTEGER UNIQUE,
+                "name" TEXT NOT NULL,
+                "surname" TEXT NOT NULL,
+                "date" DATE NOT NULL DEFAULT'2000-00-00',
+                "born" DATE NOT NULL DEFAULT'666-06-06',
+                PRIMARY KEY("id" AUTOINCREMENT)
+            );
+            
+            CREATE TABLE IF NOT EXISTS "Types"(
+                "id" INTEGER UNIQUE NOT NULL,
+                "name" TEXT NOT NULL,
+                PRIMARY KEY("id" AUTOINCREMENT)
+            );
+            
+            CREATE TABLE IF NOT EXISTS "Goods"(
+                "id" INTEGER UNIQUE,
+                "type_id" INTEGER NOT NULL,
+                "name" TEXT NOT NULL,
+                "kol" INTEGER,
+                FOREIGN KEY("type_id") REFERENCES "Types"("id"),
+                PRIMARY KEY("id" AUTOINCREMENT)
+            );
+            
+            CREATE TABLE IF NOT EXISTS "Operation"(
+                "id" INTEGER UNIQUE,
+                "good_id" INTEGER NOT NULL,
+                "type_id" INTEGER NOT NULL,
+                "client_id" INTEGER NOT NULL,
+                "kol" INTEGER NOT NULL,
+                "order_date" DATE NOT NULL DEFAULT'2000-00-00',
+                "delivery_date" DATE NOT NULL DEFAULT'6666-00-00',
+                FOREIGN KEY("client_id") REFERENCES "Client"("id"),
+                FOREIGN KEY("type_id") REFERENCES "Types"("id"),
+                FOREIGN KEY("good_id") REFERENCES "Goods"("id"),
+                PRIMARY KEY("id" AUTOINCREMENT)
+            );
+            
+            CREATE TABLE IF NOT EXISTS "Price"(
+                "good_id" INTEGER NOT NULL,
+                "price" INTEGER NOT NULL,
+                "date" DATE NOT NULL DEFAULT'2000-00-00',
+                FOREIGN KEY("good_id") REFERENCES "Goods"("id")
+            );
+            
+            '''
+        )
+
+if __name__ == '__main__':
     unittest.main(failfast=False)
