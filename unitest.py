@@ -42,6 +42,11 @@ class DataBase:
 
 class Test(unittest.TestCase):
             
+    def test_type(self):
+        print("tekst3")
+        for i in range(1, 2 + 1):
+            request = self.__temp.type(id=i)
+            self.assertEqual(1, len(request))
 
     def test_user(self):
         print("tekst2")
@@ -49,11 +54,6 @@ class Test(unittest.TestCase):
             request = self.__temp.user(id=i)
             self.assertEqual(1, len(request))
 
-    def test_type(self):
-        print("tekst3")
-        for i in range(1, 2 + 1):
-            request = self.__temp.type(id=i)
-            self.assertEqual(1, len(request))
 
     def test_goods(self):
         print("tekst")
@@ -67,11 +67,12 @@ class Test(unittest.TestCase):
             request = self.__temp.price(id=i)
             self.assertEqual(1, len(request))    
 
+
     def tearDown(self):
         self.__temp.conn.close()
         
     def setUp(self):
-        self.__temp = DataBase('1.db')
+        self.__temp = DataBase(':memory:')
         self.__temp.get_cursor.executescript(
             '''
             CREATE TABLE IF NOT EXISTS "Client"(
